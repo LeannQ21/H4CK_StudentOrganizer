@@ -6,8 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C549F9CA308ED26A00E894BB /* StudentOrganizer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C549F9C8308ED26A00E894BB /* StudentOrganizer.xcdatamodeld */; };
+		C549F9CC308ED7B400E894BB /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C549F9CB308ED7B400E894BB /* CoreDataStack.swift */; };
+		C549F9CE308ED88900E894BB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C549F9CD308ED88900E894BB /* Helpers.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		C549F970308EC9CD00E894BB /* StudentOrganizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudentOrganizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C549F9C9308ED26A00E894BB /* StudentOrganizer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StudentOrganizer.xcdatamodel; sourceTree = "<group>"; };
+		C549F9CB308ED7B400E894BB /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		C549F9CD308ED88900E894BB /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +54,9 @@
 		C549F967308EC9CD00E894BB = {
 			isa = PBXGroup;
 			children = (
+				C549F9C8308ED26A00E894BB /* StudentOrganizer.xcdatamodeld */,
+				C549F9CB308ED7B400E894BB /* CoreDataStack.swift */,
+				C549F9CD308ED88900E894BB /* Helpers.swift */,
 				C549F972308EC9CD00E894BB /* StudentOrganizer */,
 				C549F971308EC9CD00E894BB /* Products */,
 			);
@@ -132,6 +144,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C549F9CC308ED7B400E894BB /* CoreDataStack.swift in Sources */,
+				C549F9CE308ED88900E894BB /* Helpers.swift in Sources */,
+				C549F9CA308ED26A00E894BB /* StudentOrganizer.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +167,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -185,6 +201,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -345,6 +362,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C549F9C8308ED26A00E894BB /* StudentOrganizer.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C549F9C9308ED26A00E894BB /* StudentOrganizer.xcdatamodel */,
+			);
+			currentVersion = C549F9C9308ED26A00E894BB /* StudentOrganizer.xcdatamodel */;
+			path = StudentOrganizer.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C549F968308EC9CD00E894BB /* Project object */;
 }
