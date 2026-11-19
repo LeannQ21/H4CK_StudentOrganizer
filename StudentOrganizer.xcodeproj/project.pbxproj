@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8675BA4330A1466D000C2CFA /* SubjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8675BA4230A1466D000C2CFA /* SubjectsViewController.swift */; };
 		C549F9CA308ED26A00E894BB /* StudentOrganizer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C549F9C8308ED26A00E894BB /* StudentOrganizer.xcdatamodeld */; };
 		C549F9CC308ED7B400E894BB /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C549F9CB308ED7B400E894BB /* CoreDataStack.swift */; };
 		C549F9CE308ED88900E894BB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C549F9CD308ED88900E894BB /* Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8675BA4230A1466D000C2CFA /* SubjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectsViewController.swift; sourceTree = "<group>"; };
 		C549F970308EC9CD00E894BB /* StudentOrganizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudentOrganizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C549F9C9308ED26A00E894BB /* StudentOrganizer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StudentOrganizer.xcdatamodel; sourceTree = "<group>"; };
 		C549F9CB308ED7B400E894BB /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		C549F967308EC9CD00E894BB = {
 			isa = PBXGroup;
 			children = (
+				8675BA4230A1466D000C2CFA /* SubjectsViewController.swift */,
 				C549F9C8308ED26A00E894BB /* StudentOrganizer.xcdatamodeld */,
 				C549F9CB308ED7B400E894BB /* CoreDataStack.swift */,
 				C549F9CD308ED88900E894BB /* Helpers.swift */,
@@ -147,6 +150,7 @@
 				C549F9CC308ED7B400E894BB /* CoreDataStack.swift in Sources */,
 				C549F9CE308ED88900E894BB /* Helpers.swift in Sources */,
 				C549F9CA308ED26A00E894BB /* StudentOrganizer.xcdatamodeld in Sources */,
+				8675BA4330A1466D000C2CFA /* SubjectsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
