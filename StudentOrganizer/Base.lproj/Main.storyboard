@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="25408" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hI1-cB-sOp">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="25407"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,10 +46,14 @@
                             <outlet property="delegate" destination="Wpr-tC-okS" id="CYU-Sz-bcy"/>
                         </connections>
                     </tableView>
-                    <toolbarItems>
-                        <barButtonItem systemItem="add" id="LtD-ri-uMb"/>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" id="oOG-aV-XZ4"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="oOG-aV-XZ4">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="IKn-rg-WF8">
+                            <connections>
+                                <action selector="addSubjectTapped:" destination="Wpr-tC-okS" id="KGh-O3-GZt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kk0-Ob-KjW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -62,7 +66,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hI1-cB-sOp" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="OAk-oL-gfn">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                        <rect key="frame" x="0.0" y="59" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
