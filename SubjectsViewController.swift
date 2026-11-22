@@ -1,20 +1,11 @@
-//
-//  SubjectsViewController.swift
-//  StudentOrganizer
-//
-//  Created by JEN RAINA TEODORO on 11/9/26.
-//
-
 import UIKit
 import CoreData
 
 class SubjectsViewController: UITableViewController {
 
-    // MARK: - Properties
     private var subjects: [Subject] = []
     private let context = CoreDataStack.shared.context
 
-    // MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "My Subjects"
@@ -25,10 +16,11 @@ class SubjectsViewController: UITableViewController {
         loadSubjects()
     }
 
-    // MARK: - Core Data
     private func loadSubjects() {
         let request: NSFetchRequest<Subject> = Subject.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "name", ascending: true)
+        ]
 
         do {
             subjects = try context.fetch(request)
@@ -44,7 +36,6 @@ class SubjectsViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    // MARK: - Actions
     @IBAction func addSubjectTapped(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(
             title: "New Subject",
@@ -53,41 +44,54 @@ class SubjectsViewController: UITableViewController {
         )
 
         alert.addTextField { textField in
-            textField.placeholder = "e.g., Mobile Application Development 2"
+            textField.placeholder = "Enter the name of the subject"
             textField.autocapitalizationType = .words
         }
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
 
-        let saveAction = UIAlertAction(title: "Save", style: .default) {
-            [weak self, weak alert] _ in
+        alert.addAction(
+            UIAlertAction(title: "Save", style: .default) {
+                [weak self, weak alert] _ in
 
-            guard let self = self,
-                  let name = alert?.textFields?.first?.text?
-                    .trimmingCharacters(in: .whitespacesAndNewlines),
-                  !name.isEmpty else { return }
+                guard let self = self,
+                      let text = alert?.textFields?.first?.text else {
+                    return
+                }
 
-            let subject = Subject(context: self.context)
-            subject.name = name
-            subject.createdAt = Date()
+                let name = text.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
 
-            CoreDataStack.shared.save()
-            self.loadSubjects()
-        }
+                guard !name.isEmpty else {
+                    return
+                }
 
-        alert.addAction(saveAction)
+                let subject = Subject(context: self.context)
+                subject.name = name
+                subject.createdAt = Date()
+
+                CoreDataStack.shared.save()
+                self.loadSubjects()
+            }
+        )
+
         present(alert, animated: true)
     }
 
-    // MARK: - Table view data source
-    override func tableView(_ tableView: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
+    override func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return subjects.count
     }
 
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "SubjectCell",
@@ -97,7 +101,9 @@ class SubjectsViewController: UITableViewController {
         let subject = subjects[indexPath.row]
 
         let allTasks = subject.tasks as? Set<TaskItem> ?? []
-        let pendingCount = allTasks.filter { !$0.isDone }.count
+        let pendingCount = allTasks.filter {
+            !$0.isDone
+        }.count
 
         var content = cell.defaultContentConfiguration()
         content.text = subject.name ?? "Untitled subject"
@@ -109,23 +115,44 @@ class SubjectsViewController: UITableViewController {
         return cell
     }
 
-    // MARK: - Table view delegate
-    override func tableView(_ tableView: UITableView,
-                            commit editingStyle: UITableViewCell.EditingStyle,
-                            forRowAt indexPath: IndexPath) {
-
-        guard editingStyle == .delete else { return }
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        guard editingStyle == .delete else {
+            return
+        }
 
         context.delete(subjects[indexPath.row])
-
         CoreDataStack.shared.save()
 
         subjects.remove(at: indexPath.row)
 
-        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.deleteRows(
+            at: [indexPath],
+            with: .automatic
+        )
 
         tableView.backgroundView = subjects.isEmpty
             ? emptyStateLabel("No subjects yet.\nTap + to add one.")
             : nil
+    }
+
+    override func prepare(
+        for segue: UIStoryboardSegue,
+        sender: Any?
+    ) {
+        guard let tasksViewController =
+                segue.destination as? TasksViewController,
+              let cell = sender as? UITableViewCell,
+              let indexPath = tableView.indexPath(
+                for: cell
+              ) else {
+            return
+        }
+
+        tasksViewController.selectedSubject =
+            subjects[indexPath.row]
     }
 }
