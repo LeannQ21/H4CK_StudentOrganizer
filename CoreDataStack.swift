@@ -32,13 +32,15 @@ final class CoreDataStack {
     }
   
     /// Writes any pending changes to the database file.
-    func save() {
-        guard context.hasChanges else { return }
+    @discardableResult
+    func save() -> Bool {
+        guard context.hasChanges else { return true }
         do {
             try context.save()
+            return true
         } catch {
             print("Core Data save failed: \(error)")
+            return false
         }
-        
     }
 } 

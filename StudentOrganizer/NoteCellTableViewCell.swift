@@ -1,23 +1,39 @@
-//
-//  NoteCellTableViewCell.swift
-//  StudentOrganizer
-//
-//  Created by ky lim on 11/24/26.
-//
-
 import UIKit
 
-class NoteCellTableViewCell: UITableViewCell {
+final class NoteCell: UICollectionViewCell {
+
+    @IBOutlet weak var photoImageView: UIImageView!
+    @IBOutlet weak var noteLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
+        contentView.layer.cornerRadius = 12
+        contentView.clipsToBounds = true
+        contentView.backgroundColor = .secondarySystemBackground
+
+        photoImageView.clipsToBounds = true
+        photoImageView.contentMode = .scaleAspectFill
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    func configure(with note: Note) {
+        noteLabel.text = note.text
 
-        // Configure the view for the selected state
+        if let data = note.photoData,
+           let image = UIImage(data: data) {
+            photoImageView.image = image
+            photoImageView.contentMode = .scaleAspectFill
+            photoImageView.tintColor = nil
+        } else {
+            photoImageView.image = UIImage(systemName: "text.alignleft")
+            photoImageView.contentMode = .center
+            photoImageView.tintColor = .systemGray3
+        }
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        photoImageView.image = nil
+        noteLabel.text = nil
+    }
 }

@@ -1,89 +1,205 @@
-//
-//  TasksViewController.swift
-//  StudentOrganizer
-//
-//  Created by ky lim on 11/22/26.
-//
-
 import UIKit
+import CoreData
 
-class TasksViewController: UITableViewController {
+final class TasksViewController: UITableViewController {
+
+    private var tasks: [TaskItem] = []
+    private let context = CoreDataStack.shared.context
+
+    var selectedSubject: Subject?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        title = "Tasks"
+        addNotesButton()
     }
 
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadTasks()
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+    private func addNotesButton() {
+        let notesButton = UIBarButtonItem(
+            title: "Notes",
+            style: .plain,
+            target: self,
+            action: #selector(notesTapped)
+        )
+
+        // Keep Add at the far right and put Notes immediately beside it.
+        if let addButton = navigationItem.rightBarButtonItem {
+            navigationItem.rightBarButtonItems = [addButton, notesButton]
+        } else {
+            navigationItem.rightBarButtonItem = notesButton
+        }
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+    @objc private func notesTapped() {
+        performSegue(withIdentifier: "ShowNotesSegue", sender: self)
+    }
 
-        // Configure the cell...
+    private func loadTasks() {
+        guard let selectedSubject else {
+            tasks = []
+            updateEmptyState()
+            tableView.reloadData()
+            return
+        }
 
+        let request: NSFetchRequest<TaskItem> = TaskItem.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "subject == %@",
+            selectedSubject
+        )
+        // Keep unfinished work first; completed tasks move to the bottom.
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "isDone", ascending: true),
+            NSSortDescriptor(key: "dueDate", ascending: true),
+            NSSortDescriptor(key: "title", ascending: true)
+        ]
+
+        do {
+            tasks = try context.fetch(request)
+        } catch {
+            print("Could not fetch tasks: \(error)")
+            tasks = []
+        }
+
+        updateEmptyState()
+        tableView.reloadData()
+    }
+
+    private func updateEmptyState() {
+        tableView.backgroundView = tasks.isEmpty
+            ? emptyStateLabel("No tasks yet.\nTap + to add one.")
+            : nil
+    }
+
+    @IBAction func addTaskTapped(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "ShowTaskFormSegue", sender: nil)
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
+        tasks.count
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "TaskCell",
+            for: indexPath
+        )
+        let task = tasks[indexPath.row]
+        let dueDate = task.dueDate?.formatted(
+            date: .abbreviated,
+            time: .shortened
+        ) ?? "No due date"
+
+        var content = cell.defaultContentConfiguration()
+        content.text = task.title ?? "Untitled task"
+        content.secondaryText = "\(task.isDone ? "Completed" : "Pending") · \(dueDate) · \(priorityName(for: task.priority))"
+        content.secondaryTextProperties.numberOfLines = 2
+        cell.contentConfiguration = content
+        cell.accessoryType = task.isDone ? .checkmark : .none
         return cell
     }
-    */
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        let task = tasks[indexPath.row]
+        tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: "ShowTaskFormSegue", sender: task)
     }
-    */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    // A right swipe marks a task done; swiping it again restores it.
+    override func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let task = tasks[indexPath.row]
+        let action = UIContextualAction(
+            style: .normal,
+            title: task.isDone ? "Undo" : "Done"
+        ) { [weak self] _, _, completion in
+            guard let self else {
+                completion(false)
+                return
+            }
+
+            task.isDone.toggle()
+            _ = CoreDataStack.shared.save()
+            completion(true)
+
+            // Refresh after the swipe closes so the task can move in sort order.
+            DispatchQueue.main.async {
+                self.loadTasks()
+            }
+        }
+        action.image = UIImage(systemName: task.isDone ? "arrow.uturn.backward" : "checkmark")
+        action.backgroundColor = task.isDone ? .systemOrange : .systemGreen
+        return UISwipeActionsConfiguration(actions: [action])
     }
-    */
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
+    // A left swipe deletes the selected task from Core Data.
+    override func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title: "Delete"
+        ) { [weak self] _, _, completion in
+            guard let self else {
+                completion(false)
+                return
+            }
 
+            let task = self.tasks[indexPath.row]
+            self.context.delete(task)
+            _ = CoreDataStack.shared.save()
+            self.tasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.updateEmptyState()
+            completion(true)
+        }
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
-    */
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
+    private func priorityName(for priority: Int16) -> String {
+        switch priority {
+        case 0: return "Low"
+        case 2: return "High"
+        default: return "Medium"
+        }
     }
-    */
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+        switch segue.identifier {
+        case "ShowNotesSegue":
+            guard let destination = segue.destination as? NotesViewController else {
+                return
+            }
+            destination.subject = selectedSubject
 
+        case "ShowTaskFormSegue":
+            guard let destination = segue.destination as? TaskFormViewController else {
+                return
+            }
+            destination.subject = selectedSubject
+            destination.taskToEdit = sender as? TaskItem
+
+        default:
+            break
+        }
+    }
 }
